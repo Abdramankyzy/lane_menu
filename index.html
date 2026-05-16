@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>LANE — coffee & bakery</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --burg:#6b1728;
+  --burg-dark:#8a2035;
+  --burg-deep:#4e0f1c;
+  --burg-mid:#8a2035;
+  --gold:#c9a55a;
+  --gold-light:#dfc07a;
+  --cream:#faf7f2;
+  --paper:#f2ece0;
+  --paper-dark:#e8e0d0;
+  --white:#fff;
+  --ink:#1c0a10;
+  --ink-soft:#9a7060;
+  --line:rgba(107,23,40,0.12);
+  --line-strong:rgba(107,23,40,0.22);
+}
+html{scroll-behavior:smooth;background:var(--cream)}
+body{
+  font-family:'Jost',sans-serif;
+  font-weight:300;
+  color:var(--ink);
+  background:var(--cream);
+  max-width:480px;
+  margin:0 auto;
+  min-height:100vh;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── LOADER ── */
+#loader{
+  position:fixed;inset:0;
+  background:var(--burg-deep);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:1.2rem;
+  z-index:999;
+  transition:opacity 0.8s ease 0.3s,visibility 0.8s ease 0.3s;
+}
+#loader.out{opacity:0;visibility:hidden}
+.ld-wordmark{
+  font-family:'Cormorant Garamond',serif;
+  font-size:3.6rem;font-weight:300;
+  letter-spacing:0.55em;color:var(--cream);
+  animation:fadeUp 1s ease forwards;
+}
+.ld-sub{
+  font-family:'Jost',sans-serif;
+  font-size:0.52rem;letter-spacing:0.55em;
+  color:var(--gold);text-transform:uppercase;font-weight:400;
+  animation:fadeUp 1s ease 0.2s both;
+}
+.ld-bar{
+  width:60px;height:1px;
+  background:linear-gradient(to right,transparent,var(--gold),transparent);
+  animation:expand 1.2s ease 0.5s both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes expand{from{width:0;opacity:0}to{width:60px;opacity:1}}
+
+/* ── HEADER ── */
+header{
+  background:var(--burg-deep);
+  padding:2.8rem 1.5rem 2.2rem;
+  text-align:center;
+  position:relative;
+}
+header::after{
+  content:'';position:absolute;
+  bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(to right,transparent,var(--gold),transparent);
+}
+.h-deco{
+  display:flex;align-items:center;
+  justify-content:center;gap:1.2rem;
+  margin-bottom:0.4rem;
+}
+.h-deco hr{flex:1;max-width:50px;border:none;border-top:1px solid rgba(201,165,90,0.4)}
+.h-wordmark{
+  font-family:'Cormorant Garamond',serif;
+  font-size:3.2rem;font-weight:300;
+  letter-spacing:0.55em;color:var(--cream);line-height:1;
+}
+.h-tagline{
+  font-size:0.5rem;letter-spacing:0.55em;
+  color:var(--gold);text-transform:uppercase;font-weight:400;
+}
+
+/* ── NAV ── */
+nav{
+  background:var(--burg);
+  position:sticky;top:0;z-index:100;
+  overflow-x:auto;scrollbar-width:none;
+  border-bottom:1px solid rgba(0,0,0,0.1);
+}
+nav::-webkit-scrollbar{display:none}
+.nav-track{
+  display:flex;padding:0 0.8rem;
+  width:max-content;
+}
+nav a{
+  color:rgba(250,247,242,0.5);
+  text-decoration:none;
+  font-size:0.52rem;letter-spacing:0.25em;
+  text-transform:uppercase;font-weight:500;
+  padding:1rem 0.85rem;
+  border-bottom:2px solid transparent;
+  transition:all 0.25s;white-space:nowrap;
+  display:block;
+}
+nav a.active,nav a:hover{
+  color:var(--gold-light);
+  border-bottom-color:var(--gold);
+}
+
+/* ── SECTION HEADER ── */
+.sec-head{
+  padding:2.8rem 1.5rem 1.8rem;
+  text-align:center;
+  background:var(--cream);
+}
+.sec-num{
+  font-size:0.48rem;letter-spacing:0.65em;
+  color:var(--gold);text-transform:uppercase;
+  display:block;margin-bottom:0.7rem;
+}
+.sec-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:2.2rem;font-weight:300;
+  letter-spacing:0.12em;color:var(--burg-dark);
+  line-height:1;margin-bottom:1.2rem;
+}
+.sec-rule{
+  display:flex;align-items:center;
+  justify-content:center;gap:0.9rem;
+}
+.sec-rule hr{width:28px;border:none;border-top:1px solid var(--gold-light)}
+.sec-rule span{
+  font-family:'Cormorant Garamond',serif;
+  font-size:0.72rem;font-style:italic;
+  letter-spacing:0.2em;color:var(--gold);
+}
+
+/* ── PHOTO CARD (завтраки, каши) ── */
+.photo-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:0;
+  border-top:1px solid var(--line);
+  border-left:1px solid var(--line);
+}
+.photo-card{
+  background:var(--white);
+  border-right:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  overflow:hidden;
+  display:flex;flex-direction:column;
+  transition:background 0.2s;
+}
+.photo-card.wide{grid-column:1/-1}
+.photo-card .img-wrap{
+  aspect-ratio:4/3;overflow:hidden;
+  background:var(--paper-dark);
+}
+.photo-card.wide .img-wrap{aspect-ratio:16/7}
+.photo-card .img-wrap img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform 0.7s ease;
+}
+.photo-card:active .img-wrap img{transform:scale(1.04)}
+.card-body{padding:0.9rem 1rem 1.1rem;flex:1;display:flex;flex-direction:column}
+.card-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.05rem;font-weight:400;
+  letter-spacing:0.06em;color:var(--ink);
+  margin-bottom:0.3rem;line-height:1.25;
+}
+.card-desc{
+  font-family:'Cormorant Garamond',serif;
+  font-size:0.83rem;font-style:italic;
+  color:var(--ink-soft);line-height:1.55;
+  flex:1;margin-bottom:0.8rem;
+}
+.card-price{
+  font-size:0.72rem;letter-spacing:0.18em;
+  color:var(--burg);font-weight:500;
+}
+
+/* ── HORIZONTAL CARD (брускетты) ── */
+.hcard-list{
+  border-top:1px solid var(--line);
+}
+.hcard{
+  display:grid;grid-template-columns:1fr 100px;
+  min-height:90px;
+  background:var(--white);
+  border-bottom:1px solid var(--line);
+  overflow:hidden;transition:background 0.2s;
+}
+.hcard:active{background:var(--paper)}
+.hc-body{
+  padding:1rem 1.2rem;
+  display:flex;flex-direction:column;
+  justify-content:center;
+  border-right:1px solid var(--line);
+}
+.hc-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1rem;font-weight:400;
+  letter-spacing:0.06em;color:var(--ink);
+  margin-bottom:0.25rem;line-height:1.3;
+}
+.hc-desc{
+  font-family:'Cormorant Garamond',serif;
+  font-size:0.8rem;font-style:italic;
+  color:var(--ink-soft);line-height:1.45;
+  margin-bottom:0.5rem;flex:1;
+}
+.hc-price{font-size:0.68rem;letter-spacing:0.18em;color:var(--burg);font-weight:500}
+.hc-img{overflow:hidden;background:var(--paper-dark)}
+.hc-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.7s}
+.hcard:active .hc-img img{transform:scale(1.06)}
+
+/* ── LIST ITEM ── */
+.list-block{
+  background:var(--white);
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+}
+.list-item{
+  display:flex;align-items:baseline;
+  padding:0.85rem 1.5rem;
+  border-bottom:1px solid var(--line);
+  gap:0.8rem;
+  transition:background 0.15s;
+}
+.list-item:last-child{border-bottom:none}
+.list-item:active{background:var(--paper)}
+.li-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1rem;font-weight:400;
+  letter-spacing:0.05em;color:var(--ink);
+}
+.li-dots{
+  flex:1;border:none;
+  border-bottom:1px dotted rgba(107,23,40,0.2);
+  min-width:16px;
+}
+.li-price{
+  font-size:0.68rem;letter-spacing:0.16em;
+  color:var(--burg);white-space:nowrap;font-weight:500;
+}
+
+/* ── CROISSANTS 2-COL ── */
+.crois-wrap{
+  display:grid;grid-template-columns:1fr 1fr;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+}
+.crois-col{background:var(--white)}
+.crois-col+.crois-col{border-left:1px solid var(--line)}
+.crois-head{
+  padding:0.85rem 1rem 0.65rem;
+  background:var(--burg-deep);
+  text-align:center;
+}
+.crois-head span{
+  font-size:0.48rem;letter-spacing:0.5em;
+  text-transform:uppercase;color:var(--gold);
+}
+.crois-col .list-block{border:none}
+.crois-col .list-item{padding:0.8rem 1rem}
+.crois-col .li-name{font-size:0.92rem}
+.crois-col .li-price{font-size:0.64rem}
+
+/* ── DRINK TILES ── */
+.sub-label{
+  display:block;
+  font-size:0.48rem;letter-spacing:0.5em;
+  text-transform:uppercase;color:var(--ink-soft);
+  padding:1.8rem 1.5rem 0.7rem;
+}
+.drink-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  border-top:1px solid var(--line);
+  border-left:1px solid var(--line);
+}
+.dk{
+  background:var(--white);
+  padding:1rem 1.1rem;
+  border-right:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  transition:background 0.15s;
+}
+.dk:active{background:var(--paper)}
+.dk-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:0.95rem;font-weight:400;
+  letter-spacing:0.05em;margin-bottom:0.2rem;
+}
+.dk-note{
+  font-family:'Cormorant Garamond',serif;
+  font-size:0.78rem;font-style:italic;
+  color:var(--ink-soft);margin-bottom:0.5rem;
+  line-height:1.4;
+}
+.dk-price{font-size:0.65rem;letter-spacing:0.16em;color:var(--burg);font-weight:500}
+
+/* ── MILKSHAKE / ICECREAM 2-COL ── */
+.two-col-block{
+  display:grid;grid-template-columns:1fr 1fr;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  margin-bottom:0;
+}
+.tc-col{background:var(--white)}
+.tc-col+.tc-col{border-left:1px solid var(--line)}
+.tc-head{
+  padding:0.85rem 1rem 0.65rem;
+  background:var(--burg-deep);text-align:center;
+}
+.tc-head span{font-size:0.45rem;letter-spacing:0.45em;text-transform:uppercase;color:var(--gold)}
+.tc-col .list-block{border:none}
+.tc-col .list-item{padding:0.75rem 1rem}
+.tc-col .li-name{font-size:0.88rem}
+.tc-col .li-price{font-size:0.62rem}
+
+/* ── EDITORIAL QUOTE ── */
+.quote-band{
+  background:var(--burg-dark);
+  margin:2rem 0;
+  padding:3rem 1.8rem;
+  text-align:center;
+  position:relative;
+}
+.quote-band::before{
+  content:'';position:absolute;
+  inset:1rem;border:1px solid rgba(201,165,90,0.15);
+  pointer-events:none;
+}
+.quote-text{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.2rem;font-style:italic;
+  color:var(--cream);font-weight:300;
+  letter-spacing:0.04em;line-height:1.75;
+  margin-bottom:1.2rem;
+}
+.quote-attr{
+  font-size:0.48rem;letter-spacing:0.5em;
+  color:var(--gold);text-transform:uppercase;
+}
+
+/* ── SECTION DIVIDER ── */
+.sec-divider{
+  height:1px;
+  background:linear-gradient(to right,transparent,var(--line-strong),transparent);
+  margin:0 1.5rem;
+}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--burg-deep);
+  padding:2.2rem 1.5rem;
+  text-align:center;
+}
+.ft-logo{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.5rem;letter-spacing:0.5em;
+  color:var(--cream);font-weight:300;margin-bottom:0.5rem;
+}
+.ft-note{
+  font-size:0.45rem;letter-spacing:0.45em;
+  color:var(--gold);text-transform:uppercase;
+  line-height:2;
+}
+.ft-rule{
+  width:40px;height:1px;
+  background:rgba(201,165,90,0.4);
+  margin:1rem auto;
+}
+
+/* ── REVEAL ANIMATION ── */
+.rev{opacity:0;transform:translateY(14px);transition:opacity 0.8s ease,transform 0.8s ease}
+.rev.in{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<div id="loader">
+  <div class="ld-wordmark">LANE</div>
+  <div class="ld-bar"></div>
+  <div class="ld-sub">coffee &amp; bakery</div>
+</div>
+
+<header>
+  <div class="h-deco">
+    <hr>
+    <div class="h-wordmark">LANE</div>
+    <hr>
+  </div>
+  <div class="h-tagline">coffee &amp; bakery</div>
+</header>
+
+<nav>
+  <div class="nav-track">
+    <a href="#breakfast" class="active">Завтраки</a>
+    <a href="#bruschettas">Брускетты</a>
+    <a href="#croissants">Круассаны</a>
+    <a href="#porridges">Каши</a>
+    <a href="#desserts">Десерты</a>
+    <a href="#pizza">Пицца</a>
+    <a href="#coffee">Кофе</a>
+    <a href="#tea">Чай</a>
+    <a href="#drinks">Напитки</a>
+  </div>
+</nav>
+
+<!-- ══ I · ЗАВТРАКИ ══ -->
+<section id="breakfast">
+  <div class="sec-head rev">
+    <h2 class="sec-title">Завтраки</h2>
+    <div class="sec-rule"><hr><span>petit-déjeuner</span><hr></div>
+  </div>
+
+  <div class="photo-grid rev">
+    <div class="photo-card">
+      <div class="img-wrap"><img src="benegdit.jpg" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+      <div class="card-body">
+        <div class="card-name">Бенедикт с лососем</div>
+        <div class="card-desc">Бриошь, лосось, яйцо пашот, голландез</div>
+        <div class="card-price">3 300 ₸</div>
+      </div>
+    </div>
+    <div class="photo-card">
+      <div class="img-wrap"><img src="tartin.jpg" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+      <div class="card-body">
+        <div class="card-name">Тартин с авокадо и яйцом</div>
+        <div class="card-desc">Мультизлак, авокадо, пашот, индейка</div>
+        <div class="card-price">2 800 ₸</div>
+      </div>
+    </div>
+    <div class="photo-card">
+      <div class="img-wrap"><img src="engbreakf.jpg" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+      <div class="card-body">
+        <div class="card-name">Английский завтрак</div>
+        <div class="card-desc">Индейка или сосиска, драники, овощи</div>
+        <div class="card-price">3 300 ₸</div>
+      </div>
+    </div>
+    <div class="photo-card">
+      <div class="img-wrap"><img src="Scrambled.jpg" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+      <div class="card-body">
+        <div class="card-name">Скрэмбл</div>
+        <div class="card-desc">Воздушный, помидор провансаль, хлеб</div>
+        <div class="card-price">1 700 ₸</div>
+      </div>
+    </div>
+    <div class="photo-card">
+      <div class="img-wrap"><img src="scrambledwithshrimps.jpg" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+      <div class="card-body">
+        <div class="card-name">Скрэмбл с креветками</div>
+        <div class="card-desc">Нежный скрэмбл, креветки, шпинат</div>
+        <div class="card-price">2 500 ₸</div>
+      </div>
+    </div>
+    <div class="photo-card">
+      <div class="img-wrap"><img src="omletcomp.jpg" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+      <div class="card-body">
+        <div class="card-name">Омлет комплет</div>
+        <div class="card-desc">Омлет, черри, брокколи, микс салат</div>
+        <div class="card-price">3 100 ₸</div>
+      </div>
+    </div>
+    <div class="photo-card">
+      <div class="img-wrap"><img src="omletovoch.jpg" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+      <div class="card-body">
+        <div class="card-name">Овощной омлет</div>
+        <div class="card-desc">Омлет, тосты, сыр, индейка, оливки</div>
+        <div class="card-price">3 100 ₸</div>
+      </div>
+    </div>
+    <div class="photo-card">
+      <div class="img-wrap"><img src="syrniki.jpg" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+      <div class="card-body">
+        <div class="card-name">Сырники</div>
+        <div class="card-desc">Творожные, малиновое конфи, сметана</div>
+        <div class="card-price">2 300 ₸</div>
+      </div>
+    </div>
+    <div class="photo-card">
+      <div class="img-wrap"><img src="bliny.jpg" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+      <div class="card-body">
+        <div class="card-name">Блинчики</div>
+        <div class="card-desc">Тонкие румяные, ванильное мороженое, ягодный соус</div>
+        <div class="card-price">2 100 ₸</div>
+      </div>
+    </div>
+    <div class="photo-card">
+      <div class="img-wrap"><img src="vafly.jpg" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+      <div class="card-body">
+        <div class="card-name">Бельгийские вафли</div>
+        <div class="card-desc">Хрустящие, мороженое, ягодный соус , ванильное мороженое</div>
+        <div class="card-price">2 300 ₸</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ II · БРУСКЕТТЫ ══ -->
+<section id="bruschettas">
+  <div class="sec-head rev">
+    <h2 class="sec-title">Брускетты</h2>
+    <div class="sec-rule"><hr><span>bruschetta</span><hr></div>
+  </div>
+  <div class="hcard-list rev">
+    <div class="hcard">
+      <div class="hc-body">
+        <div class="hc-name">С копченой индейкой</div>
+        <div class="hc-desc">Хрустящий хлеб, нежная копченая индейка</div>
+        <div class="hc-price">2 000 ₸</div>
+      </div>
+      <div class="hc-img"><img src="brusind.jpg" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+    </div>
+    <div class="hcard">
+      <div class="hc-body">
+        <div class="hc-name">С семгой и авокадо</div>
+        <div class="hc-desc">Слабосолёная семга, кремовое авокадо</div>
+        <div class="hc-price">2 300 ₸</div>
+      </div>
+      <div class="hc-img"><img src="brussalmon.jpg" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+    </div>
+    <div class="hcard">
+      <div class="hc-body">
+        <div class="hc-name">С креветками и авокадо</div>
+        <div class="hc-desc">Ароматные креветки, авокадо, лимон</div>
+        <div class="hc-price">2 300 ₸</div>
+      </div>
+      <div class="hc-img"><img src="bruskrev.jpg" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+    </div>
+    <div class="hcard">
+      <div class="hc-body">
+        <div class="hc-name">С шампиньонами и авокадо</div>
+        <div class="hc-desc">Жареные шампиньоны, авокадо, зелень</div>
+        <div class="hc-price">2 000 ₸</div>
+      </div>
+      <div class="hc-img"><img src="brusgryb.jpg" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ III · КРУАССАНЫ ══ -->
+<section id="croissants">
+  <div class="sec-head rev">
+    <h2 class="sec-title">Круассаны</h2>
+    <div class="sec-rule"><hr><span>viennoiserie</span><hr></div>
+  </div>
+  <div class="crois-wrap rev">
+    <div class="crois-col">
+      <div class="crois-head"><span>Солёные</span></div>
+      <div class="list-block">
+        <div class="list-item"><span class="li-name">С курицей</span><span class="li-dots"></span><span class="li-price">2 500 ₸</span></div>
+        <div class="list-item"><span class="li-name">С лососем</span><span class="li-dots"></span><span class="li-price">3 000 ₸</span></div>
+        <div class="list-item"><span class="li-name">С сыром</span><span class="li-dots"></span><span class="li-price">2 500 ₸</span></div>
+        <div class="list-item"><span class="li-name">Томат-моц.</span><span class="li-dots"></span><span class="li-price">2 500 ₸</span></div>
+        <div class="list-item"><span class="li-name">Микс</span><span class="li-dots"></span><span class="li-price">2 500 ₸</span></div>
+      </div>
+    </div>
+    <div class="crois-col">
+      <div class="crois-head"><span>Сладкие</span></div>
+      <div class="list-block">
+        <div class="list-item"><span class="li-name">С шоколадом</span><span class="li-dots"></span><span class="li-price">2 500 ₸</span></div>
+        <div class="list-item"><span class="li-name">С ягодами</span><span class="li-dots"></span><span class="li-price">2 800 ₸</span></div>
+        <div class="list-item"><span class="li-name">С миндалём</span><span class="li-dots"></span><span class="li-price">2 400 ₸</span></div>
+        <div class="list-item"><span class="li-name">С фундуком</span><span class="li-dots"></span><span class="li-price">2 400 ₸</span></div>
+        <div class="list-item"><span class="li-name">Ванильный</span><span class="li-dots"></span><span class="li-price">2 400 ₸</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ IV · КАШИ ══ -->
+<section id="porridges">
+  <div class="sec-head rev">
+    <h2 class="sec-title">Каши &amp; йогурт</h2>
+    <div class="sec-rule"><hr><span>porridge</span><hr></div>
+  </div>
+  <div class="photo-grid rev">
+    <div class="photo-card">
+      <div class="img-wrap"><img src="kashaov.jpg" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+      <div class="card-body">
+        <div class="card-name">Овсяная каша</div>
+        <div class="card-desc">Кремовая, карамелизированная груша</div>
+        <div class="card-price">1 500 ₸</div>
+      </div>
+    </div>
+    <div class="photo-card">
+      <div class="img-wrap"><img src="kasharis.jpg" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+      <div class="card-body">
+        <div class="card-name">Рисовая каша</div>
+        <div class="card-desc">Ягоды, грецкие орехи</div>
+        <div class="card-price">1 500 ₸</div>
+      </div>
+    </div>
+    <div class="photo-card wide">
+      <div class="img-wrap"><img src="granolla.jpg" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+      <div class="card-body">
+        <div class="card-name">Йогурт с гранолой</div>
+        <div class="card-desc">Гранола с мёдом, натуральный йогурт, банан</div>
+        <div class="card-price">2 700 ₸</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EDITORIAL -->
+<div class="quote-band rev">
+  <p class="quote-text">«Каждое утро начинается здесь — с аромата свежей выпечки и первой чашки кофе»</p>
+  <span class="quote-attr">LANE — coffee &amp; bakery</span>
+</div>
+
+<!-- ══ V · ДЕСЕРТЫ ══ -->
+<section id="desserts">
+  <div class="sec-head rev">
+    <h2 class="sec-title">Наши десерты</h2>
+    <div class="sec-rule"><hr><span>pâtisserie</span><hr></div>
+  </div>
+
+  <div class="hcard-list rev">
+    <div class="hcard">
+      <div class="hc-body">
+        <div class="hc-name">Пирожное «Сникерс»</div>
+        <div class="hc-desc">Шоколад, карамель, арахис</div>
+        <div class="hc-price">2 800 ₸</div>
+      </div>
+      <div class="hc-img"><img src="snikers.jpg" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+    </div>
+    <div class="hcard">
+      <div class="hc-body">
+        <div class="hc-name">Пирожное «Медовик»</div>
+        <div class="hc-desc">Медовые коржи, сметанный крем</div>
+        <div class="hc-price">1 300 ₸</div>
+      </div>
+      <div class="hc-img"><img src="honey.jpg" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+    </div>
+    <div class="hcard">
+      <div class="hc-body">
+        <div class="hc-name">Пирожное «Наполеон»</div>
+        <div class="hc-desc">Слоёное тесто с воздушным кремом</div>
+        <div class="hc-price">1 300 ₸</div>
+      </div>
+      <div class="hc-img"><img src="napoleon.jpg" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+    </div>
+    <div class="hcard">
+      <div class="hc-body">
+        <div class="hc-name">Пирожное «Морковный»</div>
+        <div class="hc-desc">Пряный бисквит, сливочный крем</div>
+        <div class="hc-price">1 700 ₸</div>
+      </div>
+      <div class="hc-img"><img src="carrot.jpg" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+    </div>
+    <div class="hcard">
+      <div class="hc-body">
+        <div class="hc-name">Пирожное «Макаронс»</div>
+        <div class="hc-desc">Миндальные с нежной начинкой</div>
+        <div class="hc-price">1 700 ₸</div>
+      </div>
+      <div class="hc-img"><img src="macaron.jpg" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+    </div>
+    <div class="hcard">
+      <div class="hc-body">
+        <div class="hc-name">Меренговый рулет</div>
+        <div class="hc-desc">Меренга, нежный крем, малиновое конфи</div>
+        <div class="hc-price">1 700 ₸</div>
+      </div>
+      <div class="hc-img"><img src="rollb.jpg" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+    </div>
+    <div class="hcard">
+      <div class="hc-body">
+        <div class="hc-name">Лимонный тарт</div>
+        <div class="hc-desc">Лимонная начинка, меренга</div>
+        <div class="hc-price">2 100 ₸</div>
+      </div>
+      <div class="hc-img"><img src="tartl.jpg" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+    </div>
+    <div class="hcard">
+      <div class="hc-body">
+        <div class="hc-name">Испанский чизкейк</div>
+        <div class="hc-desc">Насыщенный сливочный вкус</div>
+        <div class="hc-price">2 800 ₸</div>
+      </div>
+      <div class="hc-img"><img src="cheescake.jpg" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+    </div>
+    <div class="hcard">
+      <div class="hc-body">
+        <div class="hc-name">Чизкейк с тары</div>
+        <div class="hc-desc">Сливочный десерт с талканом</div>
+        <div class="hc-price">3 100 ₸</div>
+      </div>
+      <div class="hc-img"><img src="tary.jpg" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+    </div>
+  </div>
+
+  <span class="sub-label">Также</span>
+  <div class="drink-grid rev">
+    <div class="dk"><div class="dk-name">Шоколадный тарт</div><div class="dk-price">2 100 ₸</div></div>
+    <div class="dk"><div class="dk-name">Ягодный тарт</div><div class="dk-price">2 100 ₸</div></div>
+    <div class="dk"><div class="dk-name">Фисташковый рулет</div><div class="dk-price">2 100 ₸</div></div>
+    <div class="dk"><div class="dk-name">Эклер</div><div class="dk-price">900 ₸</div></div>
+    <div class="dk"><div class="dk-name">Пирожное «Королевский»</div><div class="dk-price">1 700 ₸</div></div>
+    <div class="dk"><div class="dk-name">Картошка</div><div class="dk-price">700 ₸</div></div>
+    <div class="dk"><div class="dk-name">Муравейник</div><div class="dk-price">500 ₸</div></div>
+    <div class="dk"><div class="dk-name">Мадлен</div><div class="dk-price">700 ₸</div></div>
+    <div class="dk"><div class="dk-name">Орешки</div><div class="dk-price">300 ₸</div></div>
+    <div class="dk"><div class="dk-name">Шу</div><div class="dk-price">900 ₸</div></div>
+  </div>
+</section>
+
+<!-- ══ VI · ПИЦЦА ══ -->
+<section id="pizza">
+  <div class="sec-head rev">
+    <h2 class="sec-title">Пицца</h2>
+    <div class="sec-rule"><hr><span>pizza</span><hr></div>
+  </div>
+
+  <div class="photo-grid rev">
+    <div class="photo-card">
+      <div class="img-wrap"><img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400&q=80&fit=crop" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+      <div class="card-body">
+        <div class="card-name">Маргарита</div>
+        <div class="card-desc">Томат, моцарелла, базилик</div>
+        <div class="card-price">2 700 ₸</div>
+      </div>
+    </div>
+    <div class="photo-card">
+      <div class="img-wrap"><img src="https://images.unsplash.com/photo-1628840042765-356cda07504e?w=400&q=80&fit=crop" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+      <div class="card-body">
+        <div class="card-name">Пепперони</div>
+        <div class="card-desc">Томат, моцарелла, пепперони</div>
+        <div class="card-price">3 100 ₸</div>
+      </div>
+    </div>
+    <div class="photo-card">
+      <div class="img-wrap"><img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80&fit=crop" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+      <div class="card-body">
+        <div class="card-name">Гавайская</div>
+        <div class="card-desc">Курица, ананас, моцарелла</div>
+        <div class="card-price">3 700 ₸</div>
+      </div>
+    </div>
+    <div class="photo-card">
+      <div class="img-wrap"><img src="shrimppizza.jpg" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+      <div class="card-body">
+        <div class="card-name">С креветками</div>
+        <div class="card-desc">Креветки, моцарелла, соус</div>
+        <div class="card-price">3 700 ₸</div>
+      </div>
+    </div>
+    <div class="photo-card wide">
+      <div class="img-wrap"><img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=700&q=80&fit=crop" loading="lazy" alt="" onerror="this.parentElement.style.background='#e0d5c8'"></div>
+      <div class="card-body">
+        <div class="card-name">Моцарелла</div>
+        <div class="card-desc">Томат, двойная моцарелла</div>
+        <div class="card-price">3 100 ₸</div>
+      </div>
+    </div>
+  </div>
+
+  <span class="sub-label">Снэки</span>
+  <div class="drink-grid rev">
+    <div class="dk"><div class="dk-name">Куриные наггетсы</div><div class="dk-price">1 700 ₸</div></div>
+    <div class="dk"><div class="dk-name">Картофель фри</div><div class="dk-price">1 500 ₸</div></div>
+  </div>
+</section>
+
+<!-- ══ VII · КОФЕ ══ -->
+<section id="coffee">
+  <div class="sec-head rev">
+    <h2 class="sec-title">Кофе</h2>
+    <div class="sec-rule"><hr><span>café</span><hr></div>
+  </div>
+
+  <span class="sub-label">Горячий · 0.3 / 0.4 L</span>
+  <div class="drink-grid rev">
+    <div class="dk"><div class="dk-name">Эспрессо</div><div class="dk-note">60 ml</div><div class="dk-price">1 100 ₸</div></div>
+    <div class="dk"><div class="dk-name">Фильтр кофе</div><div class="dk-price">1 300 ₸</div></div>
+    <div class="dk"><div class="dk-name">Американо</div><div class="dk-price">1 300 / 1 500 ₸</div></div>
+    <div class="dk"><div class="dk-name">Капучино</div><div class="dk-price">1 300 / 1 500 ₸</div></div>
+    <div class="dk"><div class="dk-name">Флет уайт</div><div class="dk-price">1 300 ₸</div></div>
+    <div class="dk"><div class="dk-name">Латте</div><div class="dk-price">1 300 / 1 300 ₸</div></div>
+    <div class="dk"><div class="dk-name">Горячий шоколад</div><div class="dk-price">1 300 / 1 500 ₸</div></div>
+    <div class="dk"><div class="dk-name">Раф</div><div class="dk-price">1 500 / 1 800 ₸</div></div>
+    <div class="dk"><div class="dk-name">Мокко</div><div class="dk-price">1 800 / 2 100 ₸</div></div>
+    <div class="dk"><div class="dk-name">Какао</div><div class="dk-price">1300 / 1500 ₸</div></div>
+  </div>
+
+  <span class="sub-label">ICE кофе · 0.4 L</span>
+  <div class="list-block rev">
+    <div class="list-item"><span class="li-name">Ice американо</span><span class="li-dots"></span><span class="li-price">1 300 ₸</span></div>
+    <div class="list-item"><span class="li-name">Ice капучино</span><span class="li-dots"></span><span class="li-price">1 700 ₸</span></div>
+    <div class="list-item"><span class="li-name">Ice латте</span><span class="li-dots"></span><span class="li-price">1 700 ₸</span></div>
+    <div class="list-item"><span class="li-name">Гляссе</span><span class="li-dots"></span><span class="li-price">2 100 ₸</span></div>
+    <div class="list-item"><span class="li-name">Фраппе</span><span class="li-dots"></span><span class="li-price">2 100 ₸</span></div>
+  </div>
+</section>
+
+<!-- ══ VIII · ЧАЙ ══ -->
+<section id="tea">
+  <div class="sec-head rev">
+    <h2 class="sec-title">Авторские чаи</h2>
+    <div class="sec-rule"><hr><span>thé &amp; infusions</span><hr></div>
+  </div>
+
+  <span class="sub-label">0.4 / 1 L</span>
+  <div class="drink-grid rev">
+    <div class="dk"><div class="dk-name">Чёрный / зелёный</div><div class="dk-note">Насыщенный, ароматный</div><div class="dk-price">700 / 1 300 ₸</div></div>
+    <div class="dk"><div class="dk-name">Чай с молоком</div><div class="dk-note">Мягкий сливочный вкус</div><div class="dk-price">900 / 1 300 ₸</div></div>
+    <div class="dk"><div class="dk-name">Марокканский</div><div class="dk-note">Яркие мятные ноты</div><div class="dk-price">1 300 / 1 800 ₸</div></div>
+    <div class="dk"><div class="dk-name">Ромашка-мёд</div><div class="dk-note">Цветочный, мягко-сладкий</div><div class="dk-price">1 300 / 1 800 ₸</div></div>
+    <div class="dk"><div class="dk-name">Облепиха</div><div class="dk-note">Витаминный, кисло-сладкий</div><div class="dk-price">1 300 / 1 800 ₸</div></div>
+    <div class="dk"><div class="dk-name">Малина-мята</div><div class="dk-note">Ягодный со свежестью мяты</div><div class="dk-price">1 300 / 1 800 ₸</div></div>
+    <div class="dk"><div class="dk-name">Малина-имбирь</div><div class="dk-note">Ягодная сладость и острота</div><div class="dk-price">1 300 / 1 800 ₸</div></div>
+    <div class="dk"><div class="dk-name">Яблоко с корицей</div><div class="dk-note">Тёплый, уютный, пряный</div><div class="dk-price">1 300 / 1 800 ₸</div></div>
+    <div class="dk"><div class="dk-name">Ташкентский</div><div class="dk-note">Лимон, мята, мёд</div><div class="dk-price">1 300 / 1 800 ₸</div></div>
+    <div class="dk"><div class="dk-name">Ягодный</div><div class="dk-note">Микс лесных ягод</div><div class="dk-price">1 300 / 1 800 ₸</div></div>
+  </div>
+</section>
+
+<!-- ══ IX · НАПИТКИ ══ -->
+<section id="drinks">
+  <div class="sec-head rev">
+    <h2 class="sec-title">Напитки</h2>
+    <div class="sec-rule"><hr><span>boissons</span><hr></div>
+  </div>
+
+  <span class="sub-label">Лимонады · 0.4 / 1 L</span>
+  <div class="drink-grid rev">
+    <div class="dk"><div class="dk-name">Ягодный</div><div class="dk-price">1 500 / 2 300 ₸</div></div>
+    <div class="dk"><div class="dk-name">Цитрусовый</div><div class="dk-price">1 500 / 2 300 ₸</div></div>
+    <div class="dk"><div class="dk-name">Клубника-маракуйя</div><div class="dk-price">1 500 / 2 300 ₸</div></div>
+    <div class="dk"><div class="dk-name">Манго-киви</div><div class="dk-price">1 500 / 2 300 ₸</div></div>
+    <div class="dk"><div class="dk-name">Манго-маракуйя</div><div class="dk-price">1 500 / 2 300 ₸</div></div>
+    <div class="dk"><div class="dk-name">Яблоко-киви</div><div class="dk-price">1 500 / 2 300 ₸</div></div>
+  </div>
+
+  <span class="sub-label">Фреши · 0.2 / 0.4 L</span>
+  <div class="drink-grid rev">
+    <div class="dk"><div class="dk-name">Малина-черника</div><div class="dk-price">1 800 / 2 500 ₸</div></div>
+    <div class="dk"><div class="dk-name">Клубника-банан</div><div class="dk-price">1 800 / 2 500 ₸</div></div>
+    <div class="dk"><div class="dk-name">Яблоко-киви</div><div class="dk-price">1 800 / 2 500 ₸</div></div>
+    <div class="dk"><div class="dk-name">Грин фреш</div><div class="dk-price">1 800 / 2 500 ₸</div></div>
+  </div>
+
+  <span class="sub-label">Прохладительные · 0.5 L</span>
+  <div class="drink-grid rev">
+    <div class="dk"><div class="dk-name">Coca‑Cola, Sprite, Fanta</div><div class="dk-price">800 ₸</div></div>
+    <div class="dk"><div class="dk-name">Вода</div><div class="dk-price">500 ₸</div></div>
+  </div>
+
+  <div class="two-col-block rev">
+    <div class="tc-col">
+      <div class="tc-head"><span>Милк шейк · 0.4 L</span></div>
+      <div class="list-block">
+        <div class="list-item"><span class="li-name">Ванильный</span><span class="li-dots"></span><span class="li-price">1 700 ₸</span></div>
+        <div class="list-item"><span class="li-name">Шоколадный</span><span class="li-dots"></span><span class="li-price">1 900 ₸</span></div>
+        <div class="list-item"><span class="li-name">Клубничный</span><span class="li-dots"></span><span class="li-price">1 900 ₸</span></div>
+        <div class="list-item"><span class="li-name">Банановый</span><span class="li-dots"></span><span class="li-price">1 900 ₸</span></div>
+        <div class="list-item"><span class="li-name">Фисташковый</span><span class="li-dots"></span><span class="li-price">2 100 ₸</span></div>
+      </div>
+    </div>
+    <div class="tc-col">
+      <div class="tc-head"><span>Мороженое</span></div>
+      <div class="list-block">
+        <div class="list-item"><span class="li-name">Ванильный</span><span class="li-dots"></span><span class="li-price">600 ₸</span></div>
+        <div class="list-item"><span class="li-name">Шоколадный</span><span class="li-dots"></span><span class="li-price">600 ₸</span></div>
+        <div class="list-item"><span class="li-name">Клубничный</span><span class="li-dots"></span><span class="li-price">600 ₸</span></div>
+        <div class="list-item"><span class="li-name">Бабл-гам</span><span class="li-dots"></span><span class="li-price">600 ₸</span></div>
+        <div class="list-item"><span class="li-name">Фисташковый</span><span class="li-dots"></span><span class="li-price">600 ₸</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="ft-logo">LANE</div>
+  <div class="ft-rule"></div>
+  <div class="ft-note">coffee &amp; bakery<br>обслуживание включено · 10%</div>
+</footer>
+
+<script>
+// Loader
+window.addEventListener('load',()=>{
+  setTimeout(()=>document.getElementById('loader').classList.add('out'),300);
+});
+
+// Nav active on scroll
+const links=document.querySelectorAll('nav a');
+document.querySelectorAll('section[id]').forEach(s=>{
+  new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        links.forEach(l=>l.classList.remove('active'));
+        const a=document.querySelector(`nav a[href="#${e.target.id}"]`);
+        if(a){a.classList.add('active');a.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'})}
+      }
+    });
+  },{rootMargin:'-20% 0px -70% 0px'}).observe(s);
+});
+
+// Reveal on scroll
+const ro=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){e.target.classList.add('in');ro.unobserve(e.target)}
+  });
+},{rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.rev').forEach((el,i)=>{
+  el.style.transitionDelay=(i%4)*0.06+'s';
+  ro.observe(el);
+});
+</script>
+</body>
+</html>
